@@ -7,7 +7,7 @@ int n,m;
 bool direct[1010][1010];
 bool vis[1010];
 int output[1010];
-int indegree[1010]; // 학기 측정 
+int indegree[1010];  
 
 void topological_sort(){
     queue<pair<int,int>> q;
