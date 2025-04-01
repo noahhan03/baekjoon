@@ -1,84 +1,79 @@
 #include <iostream>
-#include <stack>
+#include <vector>
 
 using namespace std;
 
+int n;
+int arr[100010];
+bool vis[100010]; // 방문 확인
+bool chk[100010]; // chk 된거
+int cnt;
+
+// dfs(4, null) -> dfs(7, 4) -> dfs(6, 4 7) ->
+// path : 4 7
+// cur : 6
+// nxt : 4
+void dfs(int cur, vector<int> &path)
+{
+    vis[cur] = true;
+    path.push_back(cur);
+    int nxt = arr[cur];
+    if (vis[nxt])
+    {
+        if (chk[nxt] == false)
+        {
+            bool cyc = false;
+            for (int i = 0; i < path.size(); i++)
+            {
+                int tmp = path[i];
+                if (tmp == nxt)
+                {
+                    cyc = true;
+                }
+                if (cyc)
+                {
+                    chk[tmp] = true;
+                    cnt++;
+                }
+            }
+        }
+    }
+    else
+    {
+        dfs(nxt, path);
+    }
+}
+
 void test()
 {
-    int n, res = 0, check_num = 0;
-
+    cnt = 0;
     cin >> n;
-
-    int arr[n + 2];
-    bool check[n + 2] = {
-        false,
-    };
-
     for (int i = 1; i <= n; i++)
     {
         cin >> arr[i];
-        if (arr[i] == i)
-        {
-
-            check[i] = true;
-            check_num++;
-        }
-        else
-            check[i] = false;
+        vis[i] = false;
+        chk[i] = false;
     }
-
     for (int i = 1; i <= n; i++)
     {
-        if (check_num == n)
-            break;
-
-        int st = i;
-        stack<int> qq;
-        qq.push(i);
-        while (!qq.empty())
+        if (vis[i])
         {
-            int cur = qq.top();
-
-            if (check[arr[cur]] == true)
-            {
-                while (!qq.empty())
-                {
-                    int check_idx = qq.top();
-                    qq.pop();
-                    check[check_idx] = true;
-                    res++;
-                    check_num++;
-                }
-            }
-            if (arr[cur] == i)
-            {
-                while (!qq.empty())
-                {
-                    int check_idx = qq.top();
-                    qq.pop();
-                    check[check_idx] = true;
-                    check_num++;
-                }
-            }
-            else if (check[arr[cur]] == false)
-            {
-                qq.push(arr[cur]);
-            }
+            continue;
         }
+        vector<int> p;
+        dfs(i, p);
     }
-
-    cout << res << "\n";
 }
 
 int main()
 {
     ios::sync_with_stdio(0);
     cin.tie(0);
-    cout.tie(0);
     int T;
     cin >> T;
     for (int i = 0; i < T; i++)
     {
         test();
+        cout << n - cnt << "\n";
     }
 }
